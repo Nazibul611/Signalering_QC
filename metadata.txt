@@ -2,9 +2,9 @@
 name=Signalering QC
 qgisMinimumVersion=3.22
 description=Sample-based quality control for BGT/BAG signalering deliveries (pinpoint / pinline / pinpolygon)
-version=0.6.1
-author=Signalering QC
-email= asmnazibulbassar@gmail.com
+version=0.6.2
+author=A. S. M. Nazibul Bassar
+email=asmnazibulbassar@gmail.com
 about=Lets the reviewer draw the area to be reviewed on the map or pick it from a grid, steps a reviewer through every pin in each area with one-click Accept / error-type buttons, runs configurable automatic pre-checks, tracks missed mutations, and produces per-operator acceptance statistics plus HTML/CSV reports.
 tracker=https://github.com/Nazibul611/Signalering_QC/issues
 repository=https://github.com/Nazibul611/Signalering_QC

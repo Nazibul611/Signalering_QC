@@ -130,9 +130,9 @@ class SamplingDialog(QDialog):
         row = QHBoxLayout()
         self.spn_seed = QSpinBox()
         self.spn_seed.setRange(1, 2147483647)
-        self.spn_seed.setValue(random.randint(1, 999999))
+        self.spn_seed.setValue(random.randint(1, 999999))  # nosec B311
         btn = QPushButton("New seed")
-        btn.clicked.connect(lambda: self.spn_seed.setValue(random.randint(1, 999999)))
+        btn.clicked.connect(lambda: self.spn_seed.setValue(random.randint(1, 999999)))  # nosec B311
         row.addWidget(self.spn_seed, 1)
         row.addWidget(btn)
         form.addRow("Random seed", row)

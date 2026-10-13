@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Dock panel: step through every feature of a sampled area and judge it."""
+import logging
 import getpass
 from collections import Counter, defaultdict
 
@@ -539,7 +540,7 @@ class ReviewPanel(QDockWidget):
         try:
             self.canvas.flashFeatureIds(layer, [feat.id()])
         except Exception:
-            pass
+            logging.getLogger(__name__).debug("Ignored error", exc_info=True)
 
     def _zoom_area(self):
         area = self.current_area()

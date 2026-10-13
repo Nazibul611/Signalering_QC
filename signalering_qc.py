@@ -1,3 +1,4 @@
+import logging
 # -*- coding: utf-8 -*-
 import os
 from functools import partial
@@ -107,17 +108,17 @@ class SignaleringQC(object):
         try:
             QgsProject.instance().layersAdded.disconnect(self._watch_layers)
         except Exception:
-            pass
+            logging.getLogger(__name__).debug("Ignored error", exc_info=True)
         for lyr, slot in self._sel_slots.values():
             try:
                 lyr.selectionChanged.disconnect(slot)
             except Exception:
-                pass
+                logging.getLogger(__name__).debug("Ignored error", exc_info=True)
         self._sel_slots = {}
         try:
             QgsProject.instance().readProject.disconnect(self._on_project_read)
         except Exception:
-            pass
+            logging.getLogger(__name__).debug("Ignored error", exc_info=True)
         for act in self.actions:
             self.iface.removePluginMenu(MENU, act)
         if self.toolbar is not None:
@@ -138,7 +139,7 @@ class SignaleringQC(object):
         try:
             config.set_active_level(config.load_config(resolved=False).get("default_level", "TL"))
         except Exception:
-            pass
+            logging.getLogger(__name__).debug("Ignored error", exc_info=True)
 
     def _on_project_read(self, *_):
         self._reset_level()

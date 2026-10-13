@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Project-level configuration (stored inside the QGIS project file) and review levels."""
+import logging
 import json
 import os
 
@@ -96,7 +97,7 @@ def load_config(resolved=True):
         try:
             merge(cfg, json.loads(txt))
         except ValueError:
-            pass
+            logging.getLogger(__name__).debug("Ignored error", exc_info=True)
     _migrate(cfg)
     return _resolve(cfg) if resolved else cfg
 

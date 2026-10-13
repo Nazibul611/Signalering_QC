@@ -101,7 +101,7 @@ def draw(cells, infos, operators, mode, value, seed, min_pins=1, min_op_pins=1,
     mode "pct"  : top up until `value` % of the operator's features are in a sampled cell.
     Returns {"cells", "per_operator", "warnings"}.
     """
-    rng = random.Random(seed)
+    rng = random.Random(seed)  # nosec B311 - reproducible sampling, not security-related
     total = Counter(i.operator for i in infos)
     already = Counter(i.operator for i in infos if i.sampled)
 

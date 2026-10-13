@@ -7,6 +7,7 @@ Contents
 * PickTool     - map tool: click a cell, or drag a rectangle over several cells.
 * AreaPanel    - small non-modal window that holds the chosen areas (with live pin counts) and saves them.
 """
+import logging
 import math
 from collections import Counter
 
@@ -40,7 +41,7 @@ def _clear(canvas, rb):
         rb.reset(QgsWkbTypes.PolygonGeometry)
         canvas.scene().removeItem(rb)
     except Exception:
-        pass
+        logging.getLogger(__name__).debug("Ignored error", exc_info=True)
 
 
 # ====================================================================== map tools
@@ -685,13 +686,13 @@ class AreaPanel(QDialog):
         try:
             self.canvas.extentsChanged.disconnect(self._draw_grid)
         except Exception:
-            pass
+            logging.getLogger(__name__).debug("Ignored error", exc_info=True)
         for tool in (self.draw_tool, self.pick_tool):
             try:
                 if self.canvas.mapTool() is tool:
                     self.canvas.unsetMapTool(tool)
             except Exception:
-                pass
+                logging.getLogger(__name__).debug("Ignored error", exc_info=True)
         for name in ("rb_pending", "rb_hover", "rb_grid"):
             _clear(self.canvas, getattr(self, name))
             setattr(self, name, None)

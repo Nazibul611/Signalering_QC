@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Rectangle / click selection map tool used by the review panel's multi-select mode."""
+import logging
 from qgis.PyQt.QtCore import Qt, pyqtSignal
 from qgis.PyQt.QtGui import QColor
 from qgis.core import QgsGeometry, QgsRectangle, QgsWkbTypes
@@ -30,7 +31,7 @@ class RectSelectTool(QgsMapTool):
                 self._rb.reset(QgsWkbTypes.PolygonGeometry)
                 self.canvas().scene().removeItem(self._rb)
             except Exception:
-                pass
+                logging.getLogger(__name__).debug("Ignored error", exc_info=True)
             self._rb = None
 
     def canvasPressEvent(self, e):

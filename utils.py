@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """Small helpers shared by all modules."""
+import logging
 import datetime
 
 from qgis.PyQt.QtCore import QVariant
@@ -17,7 +18,7 @@ def is_null(v):
         if v == NULL:
             return True
     except Exception:
-        pass
+        logging.getLogger(__name__).debug("Ignored error", exc_info=True)
     if isinstance(v, str) and not v.strip():
         return True
     return False
