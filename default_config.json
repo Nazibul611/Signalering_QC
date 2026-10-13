@@ -1,0 +1,379 @@
+{
+  "layers": {
+    "point": null,
+    "line": null,
+    "polygon": null,
+    "sample": null,
+    "results": null
+  },
+  "qc_rounds": [],
+  "operator_field": "Operator",
+  "fields": {
+    "status": "QC_STATUS",
+    "error_type": "QC_FOUTTYP",
+    "remark": "QC_OPMER",
+    "date": "QC_DATUM",
+    "reviewer": "QC_DOOR",
+    "round": "QC_RONDE",
+    "qcround": "QC_RND",
+    "area": "QC_AREA",
+    "auto": "QC_AUTO"
+  },
+  "default_level": "TL",
+  "levels": {
+    "TL": {
+      "label": "Team Lead",
+      "fields": {}
+    },
+    "OL": {
+      "label": "Operator Lead",
+      "fields": {
+        "status": "OL_STATUS",
+        "error_type": "OL_FOUTTYP",
+        "remark": "OL_OPMER",
+        "date": "OL_DATUM",
+        "reviewer": "OL_DOOR",
+        "round": "OL_RONDE",
+        "qcround": "OL_RND"
+      }
+    }
+  },
+  "status_values": {
+    "accepted": "Accepted",
+    "rejected": "Rejected",
+    "doubtful": "Doubtful",
+    "missed": "Missed",
+    "undetectable": "Not detectable"
+  },
+  "error_types": [
+    {
+      "label": "Wrong object type",
+      "severity": "major"
+    },
+    {
+      "label": "False mutation",
+      "severity": "major"
+    },
+    {
+      "label": "Wrong geometry",
+      "severity": "major"
+    },
+    {
+      "label": "Wrong attribute",
+      "severity": "minor"
+    },
+    {
+      "label": "Unclear/incorrect remark",
+      "severity": "minor"
+    }
+  ],
+  "missed_label": "Missed mutation",
+  "acceptance": {
+    "max_major_error_pct": 5.0,
+    "min_reviewed_for_verdict": 20
+  },
+  "sampling": {
+    "method": "balanced",
+    "target_pins": 50,
+    "grid_size": 250,
+    "mode": "pct",
+    "value": 10,
+    "min_pins": 5,
+    "min_op_pins": 1,
+    "exclude_sampled": true
+  },
+  "review": {
+    "zoom_scale": 500,
+    "auto_advance": true
+  },
+  "report_fields": [
+    "Objecttype",
+    "Status",
+    "Opmerking"
+  ],
+  "rules": [
+    {
+      "id": "R01",
+      "name": "Geometry valid",
+      "type": "geometry",
+      "severity": "error",
+      "enabled": true
+    },
+    {
+      "id": "R02",
+      "name": "Required attributes filled",
+      "type": "required",
+      "fields": [
+        "Operator",
+        "Bronhouder",
+        "Objecttype",
+        "Status",
+        "Opmerking"
+      ],
+      "severity": "error",
+      "enabled": true
+    },
+    {
+      "id": "R03",
+      "name": "Subtype code allowed",
+      "type": "domain",
+      "field": "Subtype",
+      "allowed": [
+        "V",
+        "M",
+        "A",
+        "T"
+      ],
+      "severity": "warning",
+      "enabled": true
+    },
+    {
+      "id": "R04",
+      "name": "Status allowed",
+      "type": "domain",
+      "field": "Status",
+      "allowed": [
+        "Nieuw",
+        "Gewijzigd",
+        "Verwijderen"
+      ],
+      "severity": "warning",
+      "enabled": true
+    },
+    {
+      "id": "R05",
+      "name": "Remark matches status",
+      "type": "status_remark",
+      "status_field": "Status",
+      "remark_field": "Opmerking",
+      "patterns": {
+        "Nieuw": [
+          "nieuw"
+        ],
+        "Verwijderen": [
+          "verwijder"
+        ],
+        "Gewijzigd": [
+          "wijzig"
+        ]
+      },
+      "severity": "warning",
+      "enabled": true
+    },
+    {
+      "id": "R06",
+      "name": "Possible duplicate pin",
+      "type": "duplicate",
+      "fields": [
+        "Objecttype",
+        "Status"
+      ],
+      "distance": 1.0,
+      "layers": [
+        "point"
+      ],
+      "severity": "warning",
+      "enabled": true
+    },
+    {
+      "id": "R07",
+      "name": "Minimum area",
+      "type": "min_area",
+      "layers": [
+        "polygon"
+      ],
+      "group_field": "Objecttype",
+      "default": 4.0,
+      "overrides": {
+        "GBI": 3.0
+      },
+      "status_field": "Status",
+      "apply_status": [
+        "Nieuw"
+      ],
+      "severity": "warning",
+      "enabled": false
+    },
+    {
+      "id": "R08",
+      "name": "New BAG pand already in BAG",
+      "type": "spatial_ref",
+      "where": {
+        "MutatiType": "BAG-P",
+        "Status": "Nieuw"
+      },
+      "reference_layer": "hitbag_pnd",
+      "expect": "no_intersect",
+      "layers": [
+        "point"
+      ],
+      "severity": "warning",
+      "enabled": true
+    },
+    {
+      "id": "R09",
+      "name": "Removed BAG pand not found in BAG",
+      "type": "spatial_ref",
+      "where": {
+        "MutatiType": "BAG-P",
+        "Status": "Verwijderen"
+      },
+      "reference_layer": "hitbag_pnd",
+      "expect": "intersect",
+      "tolerance": 1.0,
+      "layers": [
+        "point"
+      ],
+      "severity": "warning",
+      "enabled": true
+    }
+  ],
+  "analysis": {
+    "bronhouder": "G0355",
+    "count_severity": "warning",
+    "reference_layers": {
+      "hitbgt": "hitbgt",
+      "oth_polygon": "v_hitbgtoth_polygon",
+      "oth_point": "v_hitbgtoth_point"
+    },
+    "reference_fields": {
+      "hitbgt": {
+        "type": "BGTTYPE",
+        "tmain": "TMAIN",
+        "tsub": "TSUB",
+        "fmain": "FMAIN",
+        "fsub": "FSUB",
+        "bron": "BGTGVT",
+        "bgtid": "BGTID",
+        "plus": "PLUSSTATUS",
+        "otype": "OTYPE"
+      },
+      "oth_polygon": {
+        "type": "BGTTYPE",
+        "tmain": "TMAIN",
+        "tsub": "TSUB",
+        "bron": "BRONHOUDER",
+        "bgtid": "BGTID",
+        "plus": "PLUSSTATUS",
+        "otype": "OTYPE"
+      },
+      "oth_point": {
+        "type": "BGTTYPE",
+        "tmain": "TMAIN",
+        "tsub": "TSUB",
+        "bron": "BRONHOUDER",
+        "bgtid": "BGTID",
+        "plus": "PLUSSTATUS",
+        "otype": "OTYPE"
+      }
+    },
+    "ignore_plusstatus": [
+      "plan"
+    ],
+    "point_tolerance_m": 1.0,
+    "related": {
+      "PND": {
+        "types": [
+          "PND"
+        ],
+        "same_severity": "warning"
+      },
+      "OBW": {
+        "types": [
+          "OBW"
+        ],
+        "same_severity": "warning"
+      },
+      "GBI": {
+        "types": [
+          "GBI"
+        ],
+        "same_severity": "warning"
+      },
+      "VGO": {
+        "types": [
+          "VGO"
+        ],
+        "same_severity": "warning"
+      },
+      "WGI": {
+        "types": [
+          "WGI"
+        ],
+        "same_severity": "warning"
+      },
+      "SHD": {
+        "types": [
+          "SHD"
+        ],
+        "same_severity": "warning"
+      },
+      "WGD": {
+        "types": [
+          "WGD"
+        ],
+        "same_severity": "info",
+        "compare_class": true
+      },
+      "BTD": {
+        "types": [
+          "BTD"
+        ],
+        "same_severity": "info",
+        "compare_class": true
+      },
+      "OTD": {
+        "types": [
+          "OTD"
+        ],
+        "same_severity": "info",
+        "compare_class": true
+      },
+      "OWG": {
+        "types": [
+          "OWG"
+        ],
+        "same_severity": "info",
+        "compare_class": true
+      },
+      "WTD": {
+        "types": [
+          "WTD"
+        ],
+        "same_severity": "info",
+        "compare_class": true
+      },
+      "BAG": {
+        "types": [],
+        "same_severity": "info"
+      }
+    },
+    "target_patterns": [
+      "^\\s*gewijzigd naar\\s+(.+)$",
+      "^\\s*objecttype wijzigen naar\\s+(.+)$"
+    ],
+    "shift": {
+      "noise_m": 0.3,
+      "cat3_max_m": 0.6,
+      "cat2_max_m": 1.0,
+      "large_m": 5.0,
+      "search_m": 3.0,
+      "step_m": 0.25,
+      "skip_types": [
+        "BAG"
+      ]
+    },
+    "replace_distance_m": 3.0,
+    "new_target_patterns": [
+      "^\\s*nieuw\\s+(.+)$"
+    ],
+    "remove_target_patterns": [
+      "^\\s*verwijderen\\s+(.+)$"
+    ]
+  },
+  "copy_coordinate": {
+    "enabled": true,
+    "crs": "EPSG:28992",
+    "format": "{x:.2f},{y:.2f}"
+  }
+}
